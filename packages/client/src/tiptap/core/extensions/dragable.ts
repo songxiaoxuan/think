@@ -119,13 +119,21 @@ export const Dragable = Extension.create({
               }
 
               let node = view.domAtPos(pos.pos);
+              let offsetLeft = 0;
 
               node = node.node;
 
               while (node && node.parentNode) {
+                // 列表页
+                if (node.tagName === 'LI' && node?.parentNode.parentNode?.classList?.contains?.('ProseMirror')) {
+                  offsetLeft = -10;
+                  break;
+                }
+
                 if (node.parentNode?.classList?.contains?.('ProseMirror')) {
                   break;
                 }
+
                 node = node.parentNode;
               }
 
@@ -134,7 +142,11 @@ export const Dragable = Extension.create({
                 return;
               }
 
-              if (node?.classList?.contains('node-title') || node?.classList?.contains('node-table')) {
+              if (
+                node?.classList?.contains('node-title') ||
+                node?.classList?.contains('node-table') ||
+                node?.classList?.contains('node-codeBlock')
+              ) {
                 dropElement.style.opacity = 0;
                 return;
               }
@@ -146,7 +158,7 @@ export const Dragable = Extension.create({
               rect.top += win.pageYOffset;
               rect.left += win.pageXOffset;
               rect.width = WIDTH + 'px';
-              dropElement.style.left = rect.left - WIDTH + 'px';
+              dropElement.style.left = rect.left - WIDTH + offsetLeft + 'px';
               dropElement.style.top = rect.top + 6 + 'px';
               dropElement.style.opacity = 1;
             },
